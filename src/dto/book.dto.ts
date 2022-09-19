@@ -13,9 +13,9 @@ export class BookDto {
   @IsNotEmpty()
   date: Date;
 
-  constructor() {
-    this.title = '';
-    this.author = '';
-    this.date = new Date();
+  constructor(book: BookDto) {
+    this.title = book.title;
+    this.author = book.author;
+    this.date = new Date(book.date);
   }
 }

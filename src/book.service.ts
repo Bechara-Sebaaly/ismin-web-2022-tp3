@@ -1,9 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Bookshelf, BookDto } from './dto';
+import { readFile } from 'fs/promises';
 
 @Injectable()
-export class BookService {
+export class BookService implements OnModuleInit {
   bookshelf: Bookshelf;
+
+  async onModuleInit(): Promise<void> {
+    try {
+      const data = await readFile('./src/datasets/dataset.json');
+      this.bookshelf.books = JSON.parse(data.toString());
+    } catch (err) {
+      throw new err();
+    }
+  }
 
   constructor() {
     this.bookshelf = new Bookshelf();

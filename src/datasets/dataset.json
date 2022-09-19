@@ -5,6 +5,11 @@
         "date": "1759"
     },
     {
+        "title": "Candor",
+        "author": "Volta",
+        "date": "1760"
+    },
+    {
         "title": "Zadig",
         "author": "Voltaire",
         "date": "1748"
@@ -13,5 +18,35 @@
         "title": "La Cantatrice chauve",
         "author": "Ionesco",
         "date": "1950"
+    },
+    {
+        "title": "Game of thrones",
+        "author": "Georges R. Martin",
+        "date": "1996"
+    },    
+    {
+        "title": "ABC",
+        "author": "ACB",
+        "date": "2000"
+    },
+    {
+        "title": "DEF",
+        "author": "DFE",
+        "date": "2001"
+    },
+    {
+        "title": "GHI",
+        "author": "GIH",
+        "date": "2002"
+    },
+    {
+        "title": "JKL",
+        "author": "JLK",
+        "date": "2003"
+    },
+    {
+        "title": "MNO",
+        "author": "MON",
+        "date": "2004"
     }
 ]

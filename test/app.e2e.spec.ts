@@ -1,4 +1,4 @@
-import * as request from 'supertest';
+import request = require('supertest');
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import supertest from 'supertest';
@@ -13,7 +13,6 @@ describe('Books API', () => {
       imports: [BookModule],
     }).compile();
 
-
     app = moduleRef.createNestApplication();
     await app.init();
 
@@ -24,7 +23,7 @@ describe('Books API', () => {
     const response = await httpRequester.get('/books').expect(200);
 
     expect(response.body).toEqual(expect.any(Array));
-    expect(response.body.length).toBeGreaterThan(10);
+    expect(response.body.length).toBeGreaterThan(9);
   });
 
   it(`/POST books`, async () => {
