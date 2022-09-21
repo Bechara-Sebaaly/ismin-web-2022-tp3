@@ -8,14 +8,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { BookService } from './book.service';
-import { BookDto } from './dto';
+import { BookDto, Books } from './dto';
 
 @Controller('/books')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Get()
-  findAll(@Query('author') author: string): BookDto[] {
+  findAll(@Query('author') author: string): Books[] {
     console.log('findAll' + author);
     if (author) {
       console.log('findAll if' + author);
@@ -41,7 +41,7 @@ export class BookController {
   }
 
   @Post()
-  create(@Body() ibookDto: BookDto): BookDto {
+  create(@Body() ibookDto: Books): Books {
     return this.bookService.create(ibookDto);
   }
 

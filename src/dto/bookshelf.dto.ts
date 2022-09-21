@@ -1,5 +1,5 @@
-import { BookDto } from './book.dto';
+import { Books } from './book';
 
 export class Bookshelf {
-  books: BookDto[] = [];
+  books: Books[] = [];
 }

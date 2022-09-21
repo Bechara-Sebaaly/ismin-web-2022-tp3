@@ -1,37 +1,38 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Bookshelf, BookDto } from './dto';
+import { Bookshelf, BookDto, ApiBook, Books } from './dto';
 import { readFile } from 'fs/promises';
+import { HttpService } from '@nestjs/axios/dist';
+import { map, tap } from 'rxjs';
 
 @Injectable()
 export class BookService implements OnModuleInit {
   bookshelf: Bookshelf;
 
-  async onModuleInit(): Promise<void> {
-    try {
-      const data = await readFile('./src/datasets/dataset.json');
-      this.bookshelf.books = JSON.parse(data.toString());
-    } catch (err) {
-      throw new err();
-    }
+  async onModuleInit() {
+    await this.readBooksFromDataset();
+
+    this.readBooksFromAPI();
   }
 
-  constructor() {
+  constructor(private readonly httpService: HttpService) {
     this.bookshelf = new Bookshelf();
   }
 
-  findAll() {
+  findAll(): Books[] {
     return this.sortBookshelf(this.bookshelf.books);
   }
 
-  findByAuthor(author: string): BookDto[] {
-    let b = this.bookshelf.books.filter((element) => element.author === author);
+  findByAuthor(author: string): Books[] {
+    let b = this.bookshelf.books.filter(
+      (element) => element.authors === author,
+    );
     this.sortBookshelf(b);
     return b;
 
     //return this.sortBookshelf(this.bookshelf.books.filter((element) => element.author === author));
   }
 
-  findByTitle(title: string): BookDto {
+  findByTitle(title: string): Books {
     const book = this.bookshelf.books.find(
       (element) => element.title === title,
     );
@@ -50,16 +51,16 @@ export class BookService implements OnModuleInit {
 
   searchByAuthor(author: string) {
     let b = this.bookshelf.books.filter((element) =>
-      element.author.includes(author),
+      element.authors.includes(author),
     );
     this.sortBookshelf(b);
     return b;
   }
 
-  create(ibookDto: BookDto): BookDto {
-    if (!this.bookshelf.books.find((element) => element === ibookDto)) {
-      this.bookshelf.books.push(ibookDto);
-      return ibookDto;
+  create(book: Books): Books {
+    if (!this.bookshelf.books.find((element) => element === book)) {
+      this.bookshelf.books.push(book);
+      return book;
     }
 
     throw new Error('Book Already Exists!');
@@ -74,9 +75,37 @@ export class BookService implements OnModuleInit {
     if (i !== -1) this.bookshelf.books.splice(i, 1);
   }
 
-  sortBookshelf(books: BookDto[]): BookDto[] {
-    return this.bookshelf.books.sort((fo: BookDto, so: BookDto) =>
+  sortBookshelf(books: Books[]): Books[] {
+    return this.bookshelf.books.sort((fo: Books, so: Books) =>
       fo.title.localeCompare(so.title),
     );
+  }
+
+  private readBooksFromAPI() {
+    this.httpService
+      .get<ApiBook[]>('https://api.npoint.io/1c88134cf081609075b7')
+      .pipe(
+        map((resp) => resp.data),
+        tap((element) => {
+          element.forEach((element) => {
+            this.bookshelf.books.push({
+              title: element.title,
+              authors: element.authors,
+              date: element.publication_date,
+            });
+          });
+          console.log(this.bookshelf.books);
+        }),
+      )
+      .subscribe();
+  }
+
+  private async readBooksFromDataset() {
+    try {
+      const data = await readFile('./src/datasets/dataset.json');
+      this.bookshelf.books = JSON.parse(data.toString());
+    } catch (err) {
+      throw err;
+    }
   }
 }

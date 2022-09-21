@@ -1,4 +1,5 @@
 import { IsString, IsNotEmpty, IsDateString } from 'class-validator';
+import { ApiBook } from './api-book.interface';
 
 export class BookDto {
   @IsString()
@@ -7,15 +8,15 @@ export class BookDto {
 
   @IsString()
   @IsNotEmpty()
-  author: string;
+  authors: string;
 
-  @IsDateString()
+  @IsString()
   @IsNotEmpty()
-  date: Date;
+  publication_date: string;
 
-  constructor(book: BookDto) {
+  constructor(book: ApiBook) {
     this.title = book.title;
-    this.author = book.author;
-    this.date = new Date(book.date);
+    this.authors = book.authors;
+    this.publication_date = book.publication_date;
   }
 }
